@@ -1,0 +1,31 @@
+K次交叉检验的大致思想是将数据大致分为K个子样本，每次取一个样本作为验证数据，取余下的K-1个样本作为训练数据。
+from sklearn.model_selection import KFold
+import numpy as np
+X = np.array([[1, 2], [3, 4], [1, 2], [3, 4]])
+y = np.array([1, 2, 3, 4])
+kf = KFold(n_splits=2)
+
+for train_index, test_index in kf.split(X):
+    print("TRAIN:", train_index, "TEST:", test_index)
+    X_train, X_test = X[train_index], X[test_index]
+    y_train, y_test = y[train_index], y[test_index]
+    
+StratifiedKFold()这个函数较常用，比KFold的优势在于将k折数据按照百分比划分数据集，每个类别百分比在训练集和测试集中都是一样，这样能保证不会有某个类别的数据在训练集中而测试集中没有这种情况，同样不会在训练集中没有全在测试集中，这样会导致结果糟糕透顶。
+from sklearn.model_selection import StratifiedKFold
+import numpy as np
+
+X = np.array([[1, 2], [3, 4], [1, 2], [3, 4]])
+y = np.array([0, 0, 1, 1])
+skf = StratifiedKFold(n_splits=2)
+for train_index, test_index in skf.split(X, y):
+    print("TRAIN:", train_index, "TEST:", test_index)
+    X_train, X_test = X[train_index], X[test_index]
+    y_train, y_test = y[train_index], y[test_index]
+    
+ 随机根据比例分配训练集和测试集。这个函数可以调整随机种子。
+import numpy as np
+from sklearn.model_selection import train_test_split
+X, y = np.arange(10).reshape((5, 2)), range(5)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.33, random_state=42)
